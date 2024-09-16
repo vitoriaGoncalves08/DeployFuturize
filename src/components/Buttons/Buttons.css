@@ -1,0 +1,14 @@
+.c-button {
+  min-height: 45px;
+  min-width: 130px;
+  border-radius: 20px;
+  background-color: #407bff !important;
+  color: #fff !important;
+  font-family: "Poppins", "Roboto", "Open Sans", "Segoe UI" !important;
+}
+
+.c-button:focus,
+.c-button:active,
+.c-button:hover {
+  outline: none !important;
+}
