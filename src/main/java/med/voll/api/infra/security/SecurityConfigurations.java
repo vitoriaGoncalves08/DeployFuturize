@@ -56,10 +56,14 @@ public class SecurityConfigurations {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.setAllowedOrigins(Arrays.asList(
+                // Adicionando IP local da sua máquina
                 "http://localhost:8081",
                 "http://localhost:5173",
                 "http://192.168.1.100:8081",
-                "https://deployfuturize-production.up.railway.app:8080"// Adicionando IP local da sua máquina
+                "https://deployfuturize-production.up.railway.app:8080",
+                "https://deployfuturize-production.up.railway.app",
+                "http://deployfuturize-production.up.railway.app:8080",
+                "http://deployfuturize-production.up.railway.app"
         ));
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS")); // Métodos permitidos
         configuration.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type", "X-Requested-With", "Accept")); // Cabeçalhos permitidos
