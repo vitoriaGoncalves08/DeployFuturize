@@ -58,7 +58,8 @@ public class SecurityConfigurations {
         configuration.setAllowedOrigins(Arrays.asList(
                 "http://localhost:8081",
                 "http://localhost:5173",
-                "http://192.168.1.100:8081" // Adicionando IP local da sua máquina
+                "http://192.168.1.100:8081",
+                "https://deployfuturize-production.up.railway.app:8080"// Adicionando IP local da sua máquina
         ));
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS")); // Métodos permitidos
         configuration.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type", "X-Requested-With", "Accept")); // Cabeçalhos permitidos
