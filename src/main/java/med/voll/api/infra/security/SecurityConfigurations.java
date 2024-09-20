@@ -64,7 +64,8 @@ public class SecurityConfigurations {
                 "https://deployfuturize-production.up.railway.app",
                 "http://deployfuturize-production.up.railway.app:8080",
                 "http://deployfuturize-production.up.railway.app",
-                "exp://192.168.15.26:8081"
+                "exp://192.168.15.26:8081",
+                "http://192.168.15.26"
         ));
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS")); // Métodos permitidos
         configuration.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type", "X-Requested-With", "Accept")); // Cabeçalhos permitidos
