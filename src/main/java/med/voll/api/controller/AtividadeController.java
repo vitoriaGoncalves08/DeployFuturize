@@ -43,6 +43,12 @@ public class AtividadeController {
     @PutMapping("/{id}")
     public ResponseEntity AtualizarAtividade(@PathVariable Long id, @RequestBody @Valid DadosAtualizarAtividade dadosAtualizarAtividade){
         var atividade = repository.getReferenceById(id);
+
+        // Construir a mensagem de notificação com ID e título da atividade
+        String mensagem = "Atividade [" + atividade.getTitulo() +
+                "] foi atualizada com sucesso, entre no app para visualizar as mudanças!";
+        atividade.setMensagemNotificacao(mensagem);
+
         atividade.atualizarInformacoes(dadosAtualizarAtividade);
         return ResponseEntity.ok(new DadosListagemAtividade(atividade));
     }
@@ -108,10 +114,16 @@ public class AtividadeController {
             String novoEstado = requestBody.get("estado");
             Optional<Atividade> atividadeOptional = repository.findById(id);
 
+
             if (atividadeOptional.isPresent()) {
                 Atividade atividade = atividadeOptional.get();
                 Estado estadoAtual = atividade.getEstado();
                 Estado estadoNovo = Estado.valueOf(novoEstado);
+
+                // Construir a mensagem de notificação com ID e título da atividade
+                String mensagem = "Atividade [" + atividade.getTitulo() +
+                        "] alterada para o estado: " + novoEstado;
+                atividade.setMensagemNotificacao(mensagem);
 
                 // Verificar se o novo estado é "REFAZENDO" e se o estado anterior era diferente de "REFAZENDO"
                 if (estadoNovo == Estado.REFAZENDO && estadoAtual != Estado.REFAZENDO) {
@@ -128,6 +140,45 @@ public class AtividadeController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Estado inválido fornecido.");
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Erro ao atualizar o estado da atividade.");
+        }
+    }
+
+    @GetMapping("/notificacao/{userId}")
+    public ResponseEntity<?> verificarNotificacao(@PathVariable Long userId) {
+        // Obter as atividades do usuário
+        List<Object[]> atividades = repository.findAtividadeIdsAndMensagensByUsuarioOuGestor(userId);
+
+        for (Object[] atividade : atividades) {
+            Long idAtividade = (Long) atividade[0];
+            String mensagem = (String) atividade[1];
+
+            if (mensagem != null && !mensagem.isEmpty()) {
+                // Limpa a mensagem de notificação para evitar loop
+                Optional<Atividade> atividadeOptional = repository.findById(idAtividade);
+                if (atividadeOptional.isPresent()) {
+                    Atividade atividadeEntidade = atividadeOptional.get();
+                    atividadeEntidade.setMensagemNotificacao("");
+                    repository.save(atividadeEntidade);
+                }
+
+                return ResponseEntity.ok(Map.of("mensagem", mensagem));
+            }
+        }
+
+        return ResponseEntity.ok(Map.of("mensagem", ""));
+    }
+
+    @PutMapping("/notificacao/limpar/{id}")
+    public ResponseEntity<?> limparNotificacao(@PathVariable Long id) {
+        Optional<Atividade> atividadeOptional = repository.findById(id);
+        if (atividadeOptional.isPresent()) {
+            Atividade atividade = atividadeOptional.get();
+            atividade.setMensagemNotificacao(""); // Limpa a mensagem de notificação
+            repository.save(atividade);
+
+            return ResponseEntity.ok("Notificação limpa com sucesso!");
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Atividade não encontrada.");
         }
     }
 
