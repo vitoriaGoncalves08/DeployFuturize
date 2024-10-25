@@ -1,1 +1,0 @@
-ALTER TABLE futurize.atividade ADD COLUMN mensagem_notificacao VARCHAR(2000);
